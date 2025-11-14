@@ -1,0 +1,22 @@
+filebeat.inputs:
+  - type: container
+    enabled: true
+    paths:
+      - /var/lib/docker/containers/*/*.log
+    json.message_key: log
+    json.add_error_key: true
+    processors:
+      - add_docker_metadata: ~
+
+# System logs (optional but recommended)
+filebeat.modules:
+  - module: system
+    syslog:
+      enabled: true
+      var.paths: ["/var/log/syslog*"]
+    auth:
+      enabled: true
+      var.paths: ["/var/log/auth.log*"]
+
+output.logstash:
+  hosts: ["logstash:5044"]
